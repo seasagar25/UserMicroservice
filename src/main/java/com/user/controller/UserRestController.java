@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,17 +28,18 @@ import com.user.service.UserService;
  */
 @RestController
 @RequestMapping("/user")
+@RefreshScope
 public class UserRestController {
 
 	@Autowired
-	private Environment environment;
+	private Environment env;
 	
 	@Autowired
 	private UserService userService;
 	
 	@RequestMapping("/status/check")
 	public String getStatus() {
-		return "working on port--"+environment.getProperty("local.server.port");	
+		return "working on port--"+env.getProperty("local.server.port")+" with token-"+env.getProperty("security.token");	
 	}
 	@PostMapping
 	public ResponseEntity<CreateUserResponseModel> createUser(@Valid @RequestBody UserModel userModel) {
